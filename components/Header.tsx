@@ -1,7 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useRef } from "react";
 import { addOns, site } from "@/lib/site";
 
 export function Header() {
+  const mobileMenuRef = useRef<HTMLDetailsElement>(null);
+
+  const closeMobileMenu = () => {
+    if (mobileMenuRef.current) {
+      mobileMenuRef.current.open = false;
+    }
+  };
+
   const serviceMenu = [
     { label: "Full Details", href: "/services/full-details" },
     { label: "Exterior Details", href: "/services/exterior-details" },
@@ -43,20 +54,33 @@ export function Header() {
 
       <a href={site.smsHref} className="btn small desktop-quote">Text Quote</a>
 
-      <details className="mobile-menu">
+      <details ref={mobileMenuRef} className="mobile-menu">
         <summary>Menu</summary>
         <div className="mobile-panel">
-          {mainLinks.slice(0,1).map(item => <Link key={item.label} href={item.href}>{item.label}</Link>)}
+          {mainLinks.slice(0, 1).map(item => (
+            <Link key={item.label} href={item.href} onClick={closeMobileMenu}>{item.label}</Link>
+          ))}
+
           <b>Services</b>
-          {serviceMenu.map(item => <Link key={item.label} href={item.href}>{item.label}</Link>)}
+          {serviceMenu.map(item => (
+            <Link key={item.label} href={item.href} onClick={closeMobileMenu}>{item.label}</Link>
+          ))}
+
           <b>Add-Ons</b>
-          <Link href="/services/add-ons">View Add-Ons</Link>
-          {addOns.map(item => <Link key={item.id} href="/services/add-ons">{item.name}</Link>)}
+          <Link href="/services/add-ons" onClick={closeMobileMenu}>View Add-Ons</Link>
+          {addOns.map(item => (
+            <Link key={item.id} href="/services/add-ons" onClick={closeMobileMenu}>{item.name}</Link>
+          ))}
+
           <b>Pages</b>
-          {mainLinks.slice(1).map(item => <Link key={item.label} href={item.href}>{item.label}</Link>)}
-          <a href={site.smsHref} className="btn small">Text Quote</a>
+          {mainLinks.slice(1).map(item => (
+            <Link key={item.label} href={item.href} onClick={closeMobileMenu}>{item.label}</Link>
+          ))}
+
+          <a href={site.smsHref} className="btn small" onClick={closeMobileMenu}>Text Quote</a>
         </div>
       </details>
     </header>
   );
 }
+
